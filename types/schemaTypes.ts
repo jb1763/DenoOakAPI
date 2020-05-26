@@ -10,7 +10,7 @@ export type UserType = {
 export type ContactInfoType = {
     contactId: string,
     uid_fk: string,
-    email: string,
-    phone: string,
+    email: Array<string>,
+    phone: Array<string>,
     deleted?: boolean,
 }
