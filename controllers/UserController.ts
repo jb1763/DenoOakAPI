@@ -19,12 +19,13 @@ const ContactInfo: Array<ContactInfoType> = [
 let nextUID = 2;
 
 const findUserById = (uid: string): Array<UserType> => {
-    return Users.filter(user => user.uid === uid)
+    return Users.filter(user => user.uid === uid && user.deleted !== true)
 }
 
 
 export const getUsers = ({ response }: {response: any}) => {
-    response.body = Users
+    console.log('All Users\n\n', Users);
+    response.body = Users.filter(user => user.deleted !== true)
 };
 
 export const getUser = ({params, response}: {params: {uid: string}, response: any}) => {
@@ -49,7 +50,6 @@ export const createUser = async ({request, response}: {request: any, response: a
     user['uid'] = `${nextUID}`;
     nextUID++;
     Users.push(user);
-    console.log(Users)
 
     response.body = { message: 'OK' };
     response.status = 200;
@@ -73,7 +73,15 @@ export const updateUser = async ({params, request, response}: {params:{uid: stri
 
 // TODO Also delete associated contact info
 export const deleteUser = ({params, response}: { params: {uid :string }, response: any}) => {
-    Users = Users.filter(user => user.uid !== params.uid);
-    response.status = 200;
-    response.body = {msg:'OK'}
+    let findUser = findUserById(params.uid);
+    if (findUser.length > 0) {
+        let deletedUser: UserType = findUser[0];
+        deletedUser['deleted'] = true;
+        Users = [...Users.filter(user => user.uid !== params.uid), deletedUser]
+        response.status = 200;
+        response.body = {msg:'OK'}
+    } else {
+        response.status = 404;
+        response.body = {msg:`Cannot find user with id ${params.uid}`}
+    }
 }

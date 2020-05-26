@@ -4,6 +4,7 @@ export type UserType = {
     lastName: string,
     // Decide on string or DateTime
     birthDate: any,
+    deleted?: boolean,
 }
 
 export type ContactInfoType = {
@@ -11,4 +12,5 @@ export type ContactInfoType = {
     uid_fk: string,
     email: string,
     phone: string,
+    deleted?: boolean,
 }
